@@ -1,0 +1,105 @@
+{
+  "type": "flex",
+  "altText": "This is a Flex Message",
+  "contents": {
+    "type": "bubble",
+    "hero": {
+      "type": "image",
+      "url": "https://ichef.bbci.co.uk/news/640/cpsprodpb/2D80/production/_119384611_224dd797-f836-409f-9e89-c9973bc07fa1.jpg",
+      "size": "full",
+      "aspectRatio": "20:13",
+      "aspectMode": "cover",
+      "action": {
+        "type": "uri",
+        "label": "Line",
+        "uri": "https://linecorp.com/"
+      }
+    },
+    "body": {
+      "type": "box",
+      "layout": "vertical",
+      "contents": [
+        {
+          "type": "text",
+          "text": "จำนวนการฉีดวัคซีน",
+          "weight": "bold",
+          "size": "xl",
+          "contents": []
+        },
+        {
+          "type": "box",
+          "layout": "vertical",
+          "spacing": "sm",
+          "margin": "lg",
+          "contents": [
+            {
+              "type": "box",
+              "layout": "baseline",
+              "spacing": "sm",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "ฉีดวัคซีน 1 เข็ม:",
+                  "size": "sm",
+                  "color": "#AAAAAA",
+                  "flex": 2,
+                  "contents": []
+                },
+                {
+                  "type": "text",
+                  "text": "${vaccince.oneDose.total} (${vaccince.oneDose.percent}%)",
+                  "size": "sm",
+                  "color": "#666666",
+                  "flex": 2,
+                  "wrap": true,
+                  "contents": []
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "layout": "baseline",
+              "spacing": "sm",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "ฉีดวัคซีน 2 เข็ม :",
+                  "size": "sm",
+                  "color": "#AAAAAA",
+                  "flex": 2,
+                  "contents": []
+                },
+                {
+                  "type": "text",
+                  "text": "${vaccince.twoDose.total} (${vaccince.twoDose.percent}%)",
+                  "size": "sm",
+                  "color": "#666666",
+                  "flex": 2,
+                  "wrap": true,
+                  "contents": []
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "layout": "vertical",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "รวมทั้งหมด : ${vaccince.all.total} (${vaccince.all.percent}%)",
+                  "size": "sm",
+                  "color": "#666666FF",
+                  "flex": 2,
+                  "gravity": "top",
+                  "wrap": true,
+                  "contents": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+  }
+
