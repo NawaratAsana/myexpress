@@ -112,6 +112,7 @@ app.post("/", function (req, res) {
 
 app.put("/user", function (req, res) {
   res.send("Got a PUT request at /user");
+  
 });
 
 app.delete("/user", function (req, res) {
@@ -142,8 +143,8 @@ app.get("/vaccine/fetch", async (req, res) => {
   await db.collection("vaccines").doc(current_date).set(data);
 
   //SEND TO BROWSER AS HTML OR TEXT
-  // let text = JSON.stringify(data);
-  // res.send(text)
+   let text = JSON.stringify(data);
+   res.send(text)
 });
 
 app.listen(process.env.PORT || port, () => {
