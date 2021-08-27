@@ -1,15 +1,17 @@
 const express = require("express");
+
 //.ENV
 const dotenv = require("dotenv");
 dotenv.config();
 
-//line config
+//LINE CONFIG
 const line = require("@line/bot-sdk");
 const config = {
   channelAccessToken: process.env.channelAccessToken,
   channelSecret: process.env.channelSecret,
 };
 const client = new line.Client(config);
+
 //FIREBASE
 const firebase = require("firebase");
 require("firebase/firestore");
@@ -31,6 +33,7 @@ const fetch = require("node-fetch");
 //WEB
 const app = express();
 const port = 3000;
+
 app.post("/webhook", line.middleware(config), (req, res) => {
   //console.log(req);
   Promise.all(req.body.events.map(handleEvent)).then((result) =>
@@ -39,42 +42,55 @@ app.post("/webhook", line.middleware(config), (req, res) => {
 });
 
 async function handleEvent(event) {
-  if (event.type !== "message" || event.message.type !== "text") {
+  if (event.type !== 'message' || ! ["text","image"].includes(event.message.type)  ) {
+    console.log("ERROR", event.type);
     return Promise.resolve(null);
   }
   //console.log(event);
   //console.log(event.message);
   //console.log(event.message.text);
+
+  if(event.message.type === 'image'){
+    console.log("This is an image!!!",event.message);
+    return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: "Thank for an image",
+    });
+}
+
   // SAVE TO FIREBASE
   let chat = await db.collection("chats").add(event);
   console.log("Added document with ID: ", chat.id);
 
-  //return client.replyMessage(event.replyToken, {
-  // type: 'text',
-  //text: event.message.text,
-  //});
-  //SWITCH FOR MANY CASES
+  // return client.replyMessage(event.replyToken, {
+  //     type: 'text',
+  //     text: event.message.text,
+  // });
+
   switch (event.message.text) {
-    case "flex":
-      let payload_template = require("./payloads/template.json");
-      let str_payload_template = JSON.stringify(payload_template);
-      let vaccince = await getTodayCovid();
-      payload_template = JSON.parse(eval("`" + str_payload_template + "`"));
-      //console.log(payload_template);
-      return client.replyMessage(event.replyToken, payload_template);
-      break;
     case "test":
-      let payload_flex = require("./payloads/test.json");
-      let str_payload_flex = JSON.stringify(payload_flex);
-      let person = {
-        name: "Nawarat",
-        lastname: "Asana",
-      };
-      payload_flex = JSON.parse(eval("`" + str_payload_flex + "`"));
-      return client.replyMessage(event.replyToken, payload_flex);
-      break;
+            let payload_flex = require('./payloads/test.json');
+            let str_payload_flex = JSON.stringify(payload_flex);
+            let person = {
+                name : "Chavalit",
+                lastname : "Koweerawong",
+            }
+            payload_flex = JSON.parse(eval('`'+str_payload_flex+'`'));
+            return client.replyMessage(event.replyToken, payload_flex);
+            break;
+
+
+    case "flex":
+            let payload_template = require('./payloads/template.json'); 
+            let str_payload_template = JSON.stringify(payload_template);
+            let vaccince = await getTodayCovid();
+            payload_template = JSON.parse(eval('`' + str_payload_template + '`'));       
+            //console.log(payload_template);    
+            return client.replyMessage(event.replyToken, payload_template);
+            break;
+
     case "covid":
-      // let newText = "สวัสดี เราเป็นบอทรายงานสถิติโควิดนะ";
+      //   let newText = "สวัสดี เราเป็นบอทรายงานสถิติโควิดนะ";
       let data = await getTodayCovid();
       let newText = JSON.stringify(data);
       return client.replyMessage(event.replyToken, {
@@ -88,8 +104,10 @@ async function handleEvent(event) {
         type: "text",
         text: event.message.text,
       });
+      
   }
 }
+
 async function getTodayCovid() {
   let current_date = new Date().toISOString().split("T")[0];
   let doc = await db.collection("vaccines").doc(current_date).get();
@@ -103,26 +121,13 @@ async function getTodayCovid() {
 
 // Respond with Hello World! on the homepage:
 app.get("/", function (req, res) {
-  res.send("Hello World!");
-});
-
-app.post("/", function (req, res) {
-  res.send("Got a POST request");
-});
-
-app.put("/user", function (req, res) {
-  res.send("Got a PUT request at /user");
-  
-});
-
-app.delete("/user", function (req, res) {
-  res.send("Got a DELETE request at /user");
+  res.send("Hello World");
 });
 
 app.get("/test-firebase", async function (req, res) {
   let data = {
-    name: "Bankok",
-    country: "Thailand",
+    name: "Tokyo",
+    country: "Japan",
   };
   const result = await db.collection("cities").add(data);
   console.log("Added document with ID: ", result.id);
@@ -138,15 +143,29 @@ app.get("/vaccine/fetch", async (req, res) => {
   );
   let data = await response.json();
   console.log(data);
+
   //SAVE TO FIRESTORE
   let current_date = new Date().toISOString().split("T")[0];
   await db.collection("vaccines").doc(current_date).set(data);
 
   //SEND TO BROWSER AS HTML OR TEXT
-   let text = JSON.stringify(data);
-   res.send(text)
+  let text = JSON.stringify(data);
+  res.send(text);
 });
 
 app.listen(process.env.PORT || port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
+});
+
+// Respond to POST request on the root route (/), the application’s home page:
+app.post("/", function (req, res) {
+  res.send("Got a POST request");
+});
+// Respond to a PUT request to the /user route:
+app.put("/user", function (req, res) {
+  res.send("Got a PUT request at /user");
+});
+// Respond to a DELETE request to the /user route:
+app.delete("/user", function (req, res) {
+  res.send("Got a DELETE request at /user");
 });
