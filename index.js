@@ -42,7 +42,10 @@ app.post("/webhook", line.middleware(config), (req, res) => {
 });
 
 async function handleEvent(event) {
-  if (event.type !== 'message' || ! ["text","image"].includes(event.message.type)  ) {
+  if (
+    event.type !== "message" ||
+    !["text", "image"].includes(event.message.type)
+  ) {
     console.log("ERROR", event.type);
     return Promise.resolve(null);
   }
@@ -50,13 +53,13 @@ async function handleEvent(event) {
   //console.log(event.message);
   //console.log(event.message.text);
 
-  if(event.message.type === 'image'){
-    console.log("This is an image!!!",event.message);
+  if (event.message.type === "image") {
+    console.log("This is an image!!!", event.message);
     return client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: "Thank for an image",
+      type: "text",
+      text: "Thank for an image",
     });
-}
+  }
 
   // SAVE TO FIREBASE
   let chat = await db.collection("chats").add(event);
@@ -69,25 +72,24 @@ async function handleEvent(event) {
 
   switch (event.message.text) {
     case "test":
-            let payload_flex = require('./payloads/test.json');
-            let str_payload_flex = JSON.stringify(payload_flex);
-            let person = {
-                name : "Chavalit",
-                lastname : "Koweerawong",
-            }
-            payload_flex = JSON.parse(eval('`'+str_payload_flex+'`'));
-            return client.replyMessage(event.replyToken, payload_flex);
-            break;
-
+      let payload_flex = require("./payloads/test.json");
+      let str_payload_flex = JSON.stringify(payload_flex);
+      let person = {
+        name: "Chavalit",
+        lastname: "Koweerawong",
+      };
+      payload_flex = JSON.parse(eval("`" + str_payload_flex + "`"));
+      return client.replyMessage(event.replyToken, payload_flex);
+      break;
 
     case "flex":
-            let payload_template = require('./payloads/template.json'); 
-            let str_payload_template = JSON.stringify(payload_template);
-            let vaccince = await getTodayCovid();
-            payload_template = JSON.parse(eval('`' + str_payload_template + '`'));       
-            //console.log(payload_template);    
-            return client.replyMessage(event.replyToken, payload_template);
-            break;
+      let payload_template = require("./payloads/template.json");
+      let str_payload_template = JSON.stringify(payload_template);
+      let vaccince = await getTodayCovid();
+      payload_template = JSON.parse(eval("`" + str_payload_template + "`"));
+      //console.log(payload_template);
+      return client.replyMessage(event.replyToken, payload_template);
+      break;
 
     case "covid":
       //   let newText = "สวัสดี เราเป็นบอทรายงานสถิติโควิดนะ";
@@ -106,6 +108,7 @@ async function handleEvent(event) {
       });
       
   }
+
 }
 
 async function getTodayCovid() {
@@ -121,7 +124,7 @@ async function getTodayCovid() {
 
 // Respond with Hello World! on the homepage:
 app.get("/", function (req, res) {
-  res.send("Hello World");
+  res.send("Hello Worl5555!");
 });
 
 app.get("/test-firebase", async function (req, res) {
