@@ -29,3 +29,5 @@ benchmarks/graphs
 
 .env
 
+firebase-key.json
+
